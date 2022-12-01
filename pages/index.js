@@ -8,6 +8,8 @@ export default function Home() {
   const [businessType, setBusinessType] = useState("random");
   const [result, setResult] = useState();
   const [ideaResult, setIdeaResult] = useState();
+  const [storyIdeaInput, setStoryIdeaInput] = useState("write a story about ");
+  const [storyIdeaResult, setStoryIdeaResult] = useState();
   const [hasTwechWallet, setHasTwetchWallet] = useState(false)
   
   useEffect(()=>{
@@ -99,6 +101,43 @@ export default function Home() {
     const data = await response.json();
     setIdeaResult(data.result);
   }
+  async function generateStory(){
+    event.preventDefault();
+    try {
+      const resp = await window.bitcoin.connect();
+      console.log(resp.publicKey.toString())
+      console.log(resp.paymail.toString())
+      
+    } catch (err) {
+      alert(err);
+      return;
+    }
+    let  paymentResponse;
+    try{
+       paymentResponse = await window.twetch.abi({
+          contract: 'payment',
+          outputs: [{
+            to: '16015@twetch.me',
+            sats: 2180
+          }]
+        });
+    }
+    catch(err){
+      console.log(err.action);
+      return;
+    }
+    console.log(paymentResponse.actionId)
+    setResult("")
+    const response = await fetch("/api/generateStory", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({description: storyIdeaInput, previous: storyIdeaResult}),
+    });
+    const data = await response.json();
+    setStoryIdeaResult(data.result);
+  }
   function handleOptionChange(changeEvent) {
     setBusinessType(changeEvent.target.value);
   }
@@ -145,14 +184,30 @@ export default function Home() {
           <div className={styles.result}>{ideaResult}</div>
           
           <button onClick={onSubmit} type="submit">Generate Business Plan</button>
-          <div style={{"padding-top":"12px"}}> 
-          <button style={{"width": "45%", "margin-right":"5%"}} onClick={onSubmit} type="submit">Keep Going</button>
-          <button style={{"width": "45%", "margin-left":"5%"}} onClick={tryAgain} type="submit">Try Again</button>
+          <div style={{"paddingTop":"12px"}}> 
+          <button style={{"width": "45%", "marginRight":"5%"}} onClick={onSubmit} type="submit">Keep Going</button>
+          <button style={{"width": "45%", "marginLeft":"5%"}} onClick={tryAgain} type="submit">Try Again</button>
           </div>
         </form>
         
         <div className={styles.result}>{result}</div>
-        
+        <h3>Or Write A Story</h3>
+        <div className="story" style={{"width":"100%"}}>
+          <div> 
+          <textarea
+            style={{"width":"100%"}}
+            rows="5"
+            type="text"
+            name="mainCharacter"
+            placeholder="Describe you idea for a story...."
+            value={storyIdeaInput}
+            onChange={(e) => setStoryIdeaInput(e.target.value)}
+          />
+          
+          </div>
+          <button onClick={generateStory} value="Generate Idea" >Generate Story</button>
+          <div className={styles.result}>{storyIdeaResult}</div>
+        </div>
       </main>
     </div>
   );
