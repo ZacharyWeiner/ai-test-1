@@ -21,7 +21,7 @@ export default async function (req, res) {
   res.status(200).json({ result: completion.data.choices[0].text });
 }
 
-function generatePrompt(previous,  what,) {
+function generatePrompt(previous, what) {
   if(previous){
     console.log({previous})
     return  `"generate an business plan for ${what}"` + previous;
