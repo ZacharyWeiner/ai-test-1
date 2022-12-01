@@ -8,9 +8,10 @@ export default function Home() {
   const [businessType, setBusinessType] = useState("random");
   const [result, setResult] = useState();
   const [ideaResult, setIdeaResult] = useState();
-  const [storyIdeaInput, setStoryIdeaInput] = useState("");
-  const [storyIdeaResult, setStoryIdeaResult] = useState();
+  const [storyIdeaInput, setStoryIdeaInput] = useState("Write a list of 3 reasons why");
+  const [storyIdeaResult, setStoryIdeaResult] = useState("");
   const [hasTwechWallet, setHasTwetchWallet] = useState(false)
+  const [loading, setLoading] = useState(false)
   
   useEffect(()=>{
     console.log({window})
@@ -33,6 +34,7 @@ export default function Home() {
     setStoryIdeaInput("");
   }
   async function onSubmit(event) {
+    setLoading(true)
     event ? event.preventDefault():  console.log("no event");
     try {
       const resp = await window.bitcoin.connect();
@@ -66,9 +68,11 @@ export default function Home() {
     const data = await response.json();
     if(result){setResult(result + data.result);}
     else{setResult(data.result);}
+    setLoading(false)
   }
   async function generateIdea(){
     event.preventDefault();
+    setLoading(true)
     try {
       const resp = await window.bitcoin.connect();
       console.log(resp.publicKey.toString())
@@ -103,9 +107,11 @@ export default function Home() {
     });
     const data = await response.json();
     setIdeaResult(data.result);
+    setLoading(false)
   }
   async function generateStory(){
     event.preventDefault();
+    setLoading(true)
     try {
       const resp = await window.bitcoin.connect();
       console.log(resp.publicKey.toString())
@@ -140,6 +146,7 @@ export default function Home() {
     });
     const data = await response.json();
     setStoryIdeaResult(data.result);
+    setLoading(false)
   }
   function handleOptionChange(changeEvent) {
     setBusinessType(changeEvent.target.value);
@@ -153,7 +160,7 @@ export default function Home() {
     }
     </div>
       <Head>
-        <title>Business Plan Generator</title>
+        <title>Command The AI</title>
         <link rel="icon" href="/dog.png" />
       </Head>
 
@@ -185,7 +192,7 @@ export default function Home() {
           />
           <button className={styles.twetchButton} onClick={generateIdea} value="Generate Idea" > Generate A Business Idea</button>
           <div className={styles.result}>{ideaResult}</div>
-          
+          <h3 style={{textAlign: "center", margin:"4px"}}>Then</h3>
           <button  className={styles.twetchButtonReverse} onClick={onSubmit} type="submit">Generate Business Plan</button>
           <div style={{"paddingTop":"12px"}}> 
           <button style={{"width": "45%", "marginRight":"5%"}} onClick={onSubmit} type="submit">Keep Going</button>
@@ -194,9 +201,10 @@ export default function Home() {
         </form>
         
         <div className={styles.result}>{result}</div>
-        <h3>Command The AI</h3>
+        <h3 >Or Ask The AI To Create Something</h3>
         <div className="story" style={{"width":"100%"}}>
           <div> 
+          <p style={{textAlign: "center", fontSize:"20px"}}>Tell it to create anything. You can say something like: Create a list of 5 reasons why X, write a crazy story about a unicorn in a bar, tell me a dad joke, summarize this for me... </p>
           <textarea
             style={{"width":"100%"}}
             rows="5"
@@ -208,7 +216,7 @@ export default function Home() {
           />
           </div>
           <div style={{"paddingTop":"12px"}}> 
-            <button style={{"width": "45%", "marginRight":"5%"}} onClick={generateStory} value="Generate Idea" >{storyIdeaResult === "" ? "Generate" : "Keep Going"}</button>
+            <button style={{"width": "45%", "marginRight":"5%"}} onClick={generateStory} value="Generate Idea" >{(!storyIdeaResult || storyIdeaResult === "") ? "Let's GO!" : "Keep Going"}</button>
             <button style={{"width": "45%", "marginRight":"5%"}} onClick={clearStory} value="Generate Idea" >Start Over</button>
           </div>
           <div className={styles.result}>{storyIdeaResult}</div>
