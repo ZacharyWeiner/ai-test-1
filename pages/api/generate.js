@@ -6,23 +6,25 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 export default async function (req, res) {
+  let prompt = generatePrompt(req.body.previous, req.body.what)
+  console.log({prompt})
   const completion = await openai.createCompletion({
     model: "text-davinci-002",
-    prompt: generatePrompt(req.body.animal),
-    temperature: 0.6,
+    prompt: prompt,
+    temperature: 0.7,
+    max_tokens: 400,
+    top_p: 1,
+    frequency_penalty: 0.11,
+    presence_penalty: 0.11
   });
+  console.log(completion.data)
   res.status(200).json({ result: completion.data.choices[0].text });
 }
 
-function generatePrompt(animal) {
-  const capitalizedAnimal =
-    animal[0].toUpperCase() + animal.slice(1).toLowerCase();
-  return `Suggest three names for an animal that is a superhero.
-
-Animal: Cat
-Names: Captain Sharpclaw, Agent Fluffball, The Incredible Feline
-Animal: Dog
-Names: Ruff the Protector, Wonder Canine, Sir Barks-a-Lot
-Animal: ${capitalizedAnimal}
-Names:`;
+function generatePrompt(previous,  what,) {
+  if(previous){
+    console.log({previous})
+    return  `"generate an business plan for ${what}"` + previous;
+  }
+  return `"generate an business plan for ${what}"`;
 }
