@@ -8,7 +8,7 @@ export default function Home() {
   const [businessType, setBusinessType] = useState("random");
   const [result, setResult] = useState();
   const [ideaResult, setIdeaResult] = useState();
-  const [storyIdeaInput, setStoryIdeaInput] = useState("Write a list of 3 reasons why");
+  const [storyIdeaInput, setStoryIdeaInput] = useState("");
   const [storyIdeaResult, setStoryIdeaResult] = useState("");
   const [hasTwechWallet, setHasTwetchWallet] = useState(false)
   const [loading, setLoading] = useState(false)
