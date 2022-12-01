@@ -8,7 +8,7 @@ export default function Home() {
   const [businessType, setBusinessType] = useState("random");
   const [result, setResult] = useState();
   const [ideaResult, setIdeaResult] = useState();
-  const [storyIdeaInput, setStoryIdeaInput] = useState("write a story about ");
+  const [storyIdeaInput, setStoryIdeaInput] = useState("");
   const [storyIdeaResult, setStoryIdeaResult] = useState();
   const [hasTwechWallet, setHasTwetchWallet] = useState(false)
   
@@ -29,6 +29,9 @@ export default function Home() {
     setResult("")
     await onSubmit(event);
   }
+  function clearStory() {
+    setStoryIdeaInput("");
+  }
   async function onSubmit(event) {
     event ? event.preventDefault():  console.log("no event");
     try {
@@ -44,7 +47,7 @@ export default function Home() {
           contract: 'payment',
           outputs: [{
             to: '16015@twetch.me',
-            sats: 2180
+            sats: 100000
           }]
         });
     }
@@ -81,7 +84,7 @@ export default function Home() {
           contract: 'payment',
           outputs: [{
             to: '16015@twetch.me',
-            sats: 2180
+            sats: 100000
           }]
         });
     }
@@ -118,7 +121,7 @@ export default function Home() {
           contract: 'payment',
           outputs: [{
             to: '16015@twetch.me',
-            sats: 2180
+            sats: 100000
           }]
         });
     }
@@ -146,7 +149,7 @@ export default function Home() {
     <div>
     <div> 
     {
-      hasTwechWallet ? "" : <a href="https://twetch.com/downloads" target="_blank" > Get Twetch Wallet</a>
+      hasTwechWallet ? "" : <a className={styles.twetchButton} href="https://twetch.com/downloads" target="_blank" > Get Twetch Wallet</a>
     }
     </div>
       <Head>
@@ -176,14 +179,14 @@ export default function Home() {
           <input
             type="text"
             name="animal"
-            placeholder="Enter an idea"
+            placeholder="Give The Business A Theme..."
             value={ideaThemelInput}
             onChange={(e) => setIdeaThemeInput(e.target.value)}
           />
-          <button onClick={generateIdea} value="Generate Idea" > Generate business Idea</button>
+          <button className={styles.twetchButton} onClick={generateIdea} value="Generate Idea" > Generate A Business Idea</button>
           <div className={styles.result}>{ideaResult}</div>
           
-          <button onClick={onSubmit} type="submit">Generate Business Plan</button>
+          <button  className={styles.twetchButtonReverse} onClick={onSubmit} type="submit">Generate Business Plan</button>
           <div style={{"paddingTop":"12px"}}> 
           <button style={{"width": "45%", "marginRight":"5%"}} onClick={onSubmit} type="submit">Keep Going</button>
           <button style={{"width": "45%", "marginLeft":"5%"}} onClick={tryAgain} type="submit">Try Again</button>
@@ -191,7 +194,7 @@ export default function Home() {
         </form>
         
         <div className={styles.result}>{result}</div>
-        <h3>Or Write A Story</h3>
+        <h3>Command The AI</h3>
         <div className="story" style={{"width":"100%"}}>
           <div> 
           <textarea
@@ -199,13 +202,15 @@ export default function Home() {
             rows="5"
             type="text"
             name="mainCharacter"
-            placeholder="Describe you idea for a story...."
+            placeholder="EXAMPLES: Create a list of reasons why X, write a crazy story about a unicorn in a bar, tell me a dad joke, explain this code  "
             value={storyIdeaInput}
             onChange={(e) => setStoryIdeaInput(e.target.value)}
           />
-          
           </div>
-          <button onClick={generateStory} value="Generate Idea" >Generate Story</button>
+          <div style={{"paddingTop":"12px"}}> 
+            <button style={{"width": "45%", "marginRight":"5%"}} onClick={generateStory} value="Generate Idea" >{storyIdeaResult === "" ? "Generate" : "Keep Going"}</button>
+            <button style={{"width": "45%", "marginRight":"5%"}} onClick={clearStory} value="Generate Idea" >Start Over</button>
+          </div>
           <div className={styles.result}>{storyIdeaResult}</div>
         </div>
       </main>
