@@ -1,3 +1,6 @@
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
 @font-face {
   font-family: "ColfaxAI";
   src: url(https://cdn.openai.com/API/fonts/ColfaxAIRegular.woff2)
@@ -107,6 +110,31 @@
     white-space: nowrap;
     cursor: pointer;
   }
+
+  .walletButton{
+    align-items: center;
+    background-image: linear-gradient(144deg,#AF40FF, #5B42F3 50%,#00DDEB);
+    border: 0;
+    border-radius: 8px;
+    box-shadow: rgba(151, 65, 252, 0.2) 0 15px 30px -5px;
+    box-sizing: border-box;
+    color: #FFFFFF;
+    display: flex;
+    font-family: Phantomsans, sans-serif;
+    font-size: 14px;
+    justify-content: center;
+    line-height: 1em;
+    max-width: 140px;
+    min-width: 140px;
+    padding: 12px 12px;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
   .twetchButtonReverse{
     align-items: center;
 background: rgba(129, 14, 208, 1.0);

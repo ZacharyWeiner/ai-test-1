@@ -17,7 +17,7 @@ export default async function (req, res,) {
   });
   console.log(completion.data)
   let respondWith = req.body.previous ? req.body.previous + " " + completion.data.choices[0].text : completion.data.choices[0].text; 
-  res.status(200).json({ result:  respondWith});
+  res.status(200).json({ result:  respondWith, finish_reason:  completion.data.choices[0].finish_reason});
 }
 
 function generatePrompt(details, previous) {

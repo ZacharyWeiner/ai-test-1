@@ -18,7 +18,8 @@ export default async function (req, res) {
     presence_penalty: 0.11
   });
   console.log(completion.data)
-  res.status(200).json({ result: completion.data.choices[0].text });
+  console.log(completion.data.choices[0].finish_reason)
+  res.status(200).json({ result: completion.data.choices[0].text, finish_reason:  completion.data.choices[0].finish_reason });
 }
 
 function generatePrompt(previous, what) {
