@@ -2,6 +2,7 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import generateIdea from "./api/generateIdea";
 import styles from "./index.module.css";
+import Script from "next/script";
 
 export default function Home() {
   const [ideaThemelInput, setIdeaThemeInput] = useState("");
@@ -15,6 +16,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
   const [solanaUserKey, setSolanaUserKey] = useState(false)
   const [dataFinishReason, setDataFinishReason] = useState(false)
+  const [relayPaymail, setRelayPaymail] = useState("")
   
   useEffect(()=>{
     console.log({window})
@@ -126,7 +128,7 @@ export default function Home() {
       SystemProgram.transfer({
         fromPubkey: publicKey,
         toPubkey: publicKey,
-        lamports: 10,
+        lamports: 100000,
       }),
     ];
     
@@ -141,15 +143,37 @@ export default function Home() {
     const transactionV0 = new VersionedTransaction(messageV0);
   }
 
+  async function payWithRelay(){
+    let paid = false;
+    if(!relayPaymail){
+      const token = await window.relayone.authBeta();
+      const [payload, signature] = token.split(".");
+      const data = JSON.parse(atob(payload)); // Buffer.from(payload, 'base64')
+      console.log(data);
+      setRelayPaymail(data.paymail)
+      // check its token from your origin
+      //if (data.origin !== "yourdomain.com") throw new Error();
+    }
+    try {
+      let response = await window.relayone.send({to: "1NVZHRegc5nYXBthaZ51FfX5MYY1D8m4er", amount: 0.04, currency: "USD" })
+      console.log(response);
+      paid = true;
+    } catch (error) {
+      paid = false
+    }
+    return paid;
+  }
+
   async function pay(){
     let paid = false;
-    const isTwetchInstalled = window.bitcoin && window.bitcoin.isTwetch
-    const isPhantomInstalled = window.phantom?.solana?.isPhantom
-    const isSensiletInstalled = window.sensilet !== 'undefined';
+    const isTwetchInstalled = window.bitcoin && window.bitcoin.isTwetch;
+    const isPhantomInstalled = window.phantom?.solana?.isPhantom;
+    const isSensiletInstalled = (window.sensilet);
+
     if(isTwetchInstalled){ paid = await payWithTwetch()}
     else if(isPhantomInstalled){  paid = await payWithPhantom()}
-    else if(isSensiletInstalled){paid = payWithSensilet()}
-    
+    else if(hasSensiletWallet){paid = payWithSensilet()}
+    else {paid = payWithRelay()}
     return paid;
   }
 
@@ -272,12 +296,12 @@ export default function Home() {
             value={ideaThemelInput}
             onChange={(e) => setIdeaThemeInput(e.target.value)}
           />
-          <button className={styles.twetchButton} onClick={generateIdea} value="Generate Idea" > Generate A Business Idea</button>
+          <button className={styles.twetchButton} onClick={generateIdea} value="Generate Idea" > Generate A Business Idea 4₵ </button>
           <div className={styles.result}>{ideaResult}</div>
           <h3 style={{textAlign: "center", margin:"4px"}}>Then</h3>
-          <button  className={styles.twetchButtonReverse} onClick={onSubmit} type="submit">Generate Business Plan</button>
+          <button  className={styles.twetchButtonReverse} onClick={onSubmit} type="submit">Generate Business Plan 4₵</button>
           <div style={{"paddingTop":"12px"}}> 
-          <button style={{"width": "45%", "marginRight":"5%"}} onClick={onSubmit} type="submit">Keep Going</button>
+          <button style={{"width": "45%", "marginRight":"5%"}} onClick={onSubmit} type="submit">Keep Going 4₵</button>
           <button style={{"width": "45%", "marginLeft":"5%"}} onClick={tryAgain} type="submit">Try Again</button>
           </div>
         </form>
@@ -301,12 +325,13 @@ export default function Home() {
           {dataFinishReason === "stop" 
             ? ""
             : 
-            <button style={{"width": "45%", "marginRight":"5%"}} onClick={generateStory} value="Generate Idea" >{(!storyIdeaResult || storyIdeaResult === "") ? "Let's GO!" : "Keep Going"}</button>
+            <button style={{"width": "45%", "marginRight":"5%"}} onClick={generateStory} value="Generate Idea" >{(!storyIdeaResult || storyIdeaResult === "") ? "Let's GO! 4₵" : "Keep Going 4₵"}</button>
           }
             <button style={{"width": "45%", "marginLeft":"5%"}} onClick={clearStory} value="Generate Idea" >Start Over</button>
           </div>
           <div className={styles.result}>{storyIdeaResult}</div>
         </div>
+        <Script src="https://one.relayx.io/relayone.js " strategy="lazyOnload" />
       </main>
     </div>
   );
