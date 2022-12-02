@@ -225,15 +225,6 @@ export default function Home() {
   async function generateStory(){
     event.preventDefault();
     setLoading(true)
-    try {
-      const resp = await window.bitcoin.connect();
-      console.log(resp.publicKey.toString())
-      console.log(resp.paymail.toString())
-      
-    } catch (err) {
-      alert(err);
-      return;
-    }
    let paid = false
    paid = await pay();
     setResult("")
